@@ -2,13 +2,17 @@ import "react-app-polyfill/ie11";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import {FullTable, FullTableColumns} from "../dist";
-import {Input} from "antd";
+import {DatePicker, Input} from "antd";
+import {ColorPicker} from "./components/color-picker/color-picker";
+import * as dayjs from "dayjs";
 
 interface Item {
     key: string;
     name: string;
     age: number;
     address: string;
+    color: string;
+    date: dayjs.Dayjs;
 }
 
 const originData: Item[] = [];
@@ -18,6 +22,8 @@ for (let i = 0; i < 100; i++) {
         name: `Edward ${i}`,
         age: 32,
         address: `London Park no. ${i}`,
+        color: "#000000",
+        date: dayjs(),
     });
 }
 
@@ -42,13 +48,30 @@ const tableColumns: FullTableColumns = [
         width: '40%',
         mutable: true,
         mutableNode: <Input/>,
-        render: (record, text, rowIndex) => {
-            console.log("record", record);
-            console.log("text", text);
-            console.log("rowIndex", rowIndex);
-            return <span style={{color: "red"}}>{text}</span>
+        render: (record) => {
+            return <span style={{color: "red"}}>{record.address}</span>
         }
     },
+    {
+        title: "color",
+        dataIndex: "color",
+        width: "5%",
+        mutable: true,
+        mutableNode: <ColorPicker disabled={false}/>,
+        render: (_, text) => {
+            return <ColorPicker disabled={true} value={text} />
+        }
+    },
+    {
+        title: "date",
+        dataIndex: "date",
+        width: "10%",
+        mutable: true,
+        mutableNode: <DatePicker />,
+        render: (record) => {
+            return <span>{record.date.format("YYYY-MM-DD")}</span>
+        }
+    }
 ];
 
 const App = () => {
