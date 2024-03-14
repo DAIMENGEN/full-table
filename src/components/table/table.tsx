@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {TableProps, TableRowData} from "../../core/structs/table";
 import {Button, Form, Popconfirm, Space, Table as AntdTable} from "antd";
 import {TableCell} from "./table-cell";
@@ -67,8 +67,9 @@ export const Table: React.FC<TableProps> = (props) => {
             }
         }
     ] : _tableColumns) as ColumnsType<TableRowData>;
+    useEffect(() => setDataSource(originData), [props]);
     return (
-        <Form form={form} component={false}>
+        <Form form={form}>
             <AntdTable bordered={true}
                        dataSource={dataSource}
                        columns={columns}
