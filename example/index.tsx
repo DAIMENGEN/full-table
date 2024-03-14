@@ -32,7 +32,7 @@ const tableColumns: FullTableColumns = [
         title: "name",
         dataIndex: "name",
         width: '25%',
-        mutable: true,
+        mutable: false,
         mutableNode: <Input/>
     },
     {

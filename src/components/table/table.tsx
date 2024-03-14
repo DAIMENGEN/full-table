@@ -33,7 +33,7 @@ export const Table: React.FC<TableProps> = (props) => {
             dataIndex: column.dataIndex,
             onCell: (record: TableRowData, rowIndex: number | undefined) => ({
                 rowData: record,
-                editing: isEditing(record),
+                editing: isEditing(record) && column.mutable,
                 dataIndex: column.dataIndex,
                 mutableNode: column.mutableNode,
                 rowIndex: rowIndex,
