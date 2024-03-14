@@ -18,7 +18,7 @@ export const Table: React.FC<TableProps> = (props) => {
     const cancel = () => setEditingKey(undefined);
     const save = async (oldRecord: TableRowData) => {
         cancel();
-        const newRecord = {key: oldRecord.key, ...form.getFieldsValue()};
+        const newRecord = {...oldRecord, ...form.getFieldsValue()};
         setDataSource(dataSource => {
             const targetIndex = dataSource.findIndex(record => record.key === oldRecord.key);
             dataSource.splice(targetIndex, 1, newRecord);
