@@ -2,11 +2,14 @@
   "name": "full-table",
   "author": "mengen.dai",
   "module": "dist/full-table.esm.js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "table",
+    "editable",
+    "data-table",
     "full-table",
-    "edit-table"
+    "edit-table",
+    "data-management"
   ],
   "license": "MIT",
   "main": "dist/index.js",

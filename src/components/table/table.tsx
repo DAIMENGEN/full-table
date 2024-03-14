@@ -40,7 +40,7 @@ export const Table: React.FC<TableProps> = (props) => {
             }),
             render: (text: string, record: TableRowData, index: number | undefined) => {
                 if (column.render) {
-                   return  column.render(record, text, index);
+                    return column.render(record, text, index);
                 } else {
                     return <>{text}</>
                 }
@@ -62,12 +62,17 @@ export const Table: React.FC<TableProps> = (props) => {
                         </Popconfirm>
                     </Space>
                 ) : (
-                    <Button icon={<EditOutlined />} disabled={!!editingKey} onClick={() => edit(record)}/>
+                    <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
                 );
             }
         }
     ] : _tableColumns) as ColumnsType<TableRowData>;
-    useEffect(() => setDataSource(originData), [props]);
+    useEffect(() => {
+        setDataSource(originData)
+        return () => {
+            form.resetFields();
+        }
+    }, [props]);
     return (
         <Form form={form}>
             <AntdTable bordered={true}
