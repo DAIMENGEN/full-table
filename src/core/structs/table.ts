@@ -11,25 +11,27 @@ export type TableColumn = {
     title: string;
     dataIndex: string;
     width?: string;
-    mutable?: boolean;
-    mutableNode?: ReactNode;
+    editable?: boolean;
+    formControl?: ReactNode;
     render?: (record: TableRowData, text?: string, rowIndex?: number) => ReactNode;
 }
 
 export type TableColumns = Array<TableColumn>;
 
 export type TableProps = {
-    mutable: boolean;
     originData: Array<TableRowData>;
     tableColumns: TableColumns;
-    mutableCallback?: (newRecord: TableRowData, oldRecord?: TableRowData) => void;
+    editable?: boolean;
+    removable?: boolean;
+    editCallback?: (newRecord: TableRowData, oldRecord?: TableRowData) => void;
+    removeCallback?: (record: TableRowData) => void;
 }
 
 export type TableCellProps = {
     rowData: TableRowData;
     editing: boolean;
     dataIndex: string;
-    mutableNode?: ReactNode;
+    formControl?: ReactNode;
     children?: ReactNode;
     rowIndex?: number;
     rules?: Array<TableCellRule>;

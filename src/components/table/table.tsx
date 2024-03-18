@@ -3,40 +3,25 @@ import {useEffect, useState} from "react";
 import {TableProps, TableRowData} from "../../core/structs/table";
 import {Button, Form, Popconfirm, Space, Table as AntdTable} from "antd";
 import {TableCell} from "./table-cell";
+import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {ColumnsType} from "antd/es/table";
-import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
+
 export const Table: React.FC<TableProps> = (props) => {
-    const {mutable, originData, tableColumns, mutableCallback} = props;
+    const {editable = false, removable = false, originData, tableColumns: columns, removeCallback, editCallback} = props;
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState<string>();
     const [dataSource, setDataSource] = useState(originData);
-    const isEditing = (record: TableRowData) => record.key === editingKey;
-    const edit = (record: Partial<TableRowData>) => {
-        form.setFieldsValue({...record});
-        setEditingKey(record.key);
-    };
-    const cancel = () => setEditingKey(undefined);
-    const save = async (oldRecord: TableRowData) => {
-        cancel();
-        const newRecord = {...oldRecord, ...form.getFieldsValue()};
-        setDataSource(dataSource => {
-            const targetIndex = dataSource.findIndex(record => record.key === oldRecord.key);
-            dataSource.splice(targetIndex, 1, newRecord);
-            return [...dataSource];
-        });
-        mutableCallback && mutableCallback(newRecord, oldRecord);
-    };
-    const _tableColumns = tableColumns.map(column => {
+    const tableColumns = columns.map(column => {
         return {
             title: column.title,
             width: column.width,
             dataIndex: column.dataIndex,
             onCell: (record: TableRowData, rowIndex: number | undefined) => ({
                 rowData: record,
-                editing: isEditing(record) && column.mutable,
-                dataIndex: column.dataIndex,
-                mutableNode: column.mutableNode,
                 rowIndex: rowIndex,
+                dataIndex: column.dataIndex,
+                formControl: column.formControl,
+                editing: column.editable && record.key === editingKey,
             }),
             render: (text: string, record: TableRowData, index: number | undefined) => {
                 if (column.render) {
@@ -47,26 +32,96 @@ export const Table: React.FC<TableProps> = (props) => {
             }
         }
     });
-    const columns = (mutable ? [
-        ..._tableColumns,
-        {
-            title: "operation",
-            dataIndex: "operation",
-            render: (_: string, record: TableRowData) => {
-                const editable = isEditing(record);
-                return editable ? (
-                    <Space size={`middle`}>
-                        <Button title={`save`} icon={<CheckOutlined/>} onClick={() => save(record)}/>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <Button title={`cancel`} icon={<CloseOutlined/>}/>
-                        </Popconfirm>
-                    </Space>
-                ) : (
-                    <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
-                );
-            }
+    const save = async (oldRecord: TableRowData) => {
+        cancel();
+        const newRecord = {...oldRecord, ...form.getFieldsValue()};
+        setDataSource(dataSource => {
+            const targetIndex = dataSource.findIndex(record => record.key === oldRecord.key);
+            dataSource.splice(targetIndex, 1, newRecord);
+            return [...dataSource];
+        });
+        editCallback && editCallback(newRecord, oldRecord);
+    };
+    const remove = async (record: TableRowData) => {
+        setDataSource(dataSource => dataSource.filter(data => data.key !== record.key));
+        removeCallback && removeCallback(record);
+    }
+    const edit = (record: Partial<TableRowData>) => {
+        form.setFieldsValue({...record});
+        setEditingKey(record.key);
+    };
+    const cancel = () => setEditingKey(undefined);
+    const tableColumnBuilder = () => {
+        if (editable && removable) {
+            return [
+                ...tableColumns,
+                {
+                    title: "operation",
+                    dataIndex: "operation",
+                    render: (_: string, record: TableRowData) => {
+                        const editing = record.key === editingKey;
+                        return editing ? (
+                            <Space size={`middle`}>
+                                <Button title={`save`} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                                    <Button title={`cancel`} icon={<CloseOutlined/>}/>
+                                </Popconfirm>
+                            </Space>
+                        ) : (
+                            <Space size={`middle`}>
+                                <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
+                                <Popconfirm title={"Sure to remove?"} onConfirm={() => remove(record)}>
+                                    <Button title={`remove`} icon={<DeleteOutlined/>}/>
+                                </Popconfirm>
+                            </Space>
+                        )
+                    }
+                }
+            ] as ColumnsType<TableRowData>;
+        } else if (editable) {
+            return [
+                ...tableColumns,
+                {
+                    title: "operation",
+                    dataIndex: "operation",
+                    render: (_: string, record: TableRowData) => {
+                        const editing = record.key === editingKey;
+                        return editing ? (
+                            <Space size={`middle`}>
+                                <Button title={`save`} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                                    <Button title={`cancel`} icon={<CloseOutlined/>}/>
+                                </Popconfirm>
+                            </Space>
+                        ) : (
+                            <Space size={`middle`}>
+                                <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
+                            </Space>
+                        )
+                    }
+                }
+            ] as ColumnsType<TableRowData>;
+        } else if (removable) {
+            return [
+                ...tableColumns,
+                {
+                    title: "operation",
+                    dataIndex: "operation",
+                    render: (_: string, record: TableRowData) => {
+                        return (
+                            <Space size={`middle`}>
+                                <Popconfirm title={"Sure to remove?"} onConfirm={() => remove(record)}>
+                                    <Button title={`remove`} icon={<DeleteOutlined/>}/>
+                                </Popconfirm>
+                            </Space>
+                        )
+                    }
+                }
+            ] as  ColumnsType<TableRowData>;
+        } else {
+            return tableColumns as  ColumnsType<TableRowData>;
         }
-    ] : _tableColumns) as ColumnsType<TableRowData>;
+    }
     useEffect(() => {
         setDataSource(originData)
         return () => {
@@ -77,7 +132,7 @@ export const Table: React.FC<TableProps> = (props) => {
         <Form form={form}>
             <AntdTable bordered={true}
                        dataSource={dataSource}
-                       columns={columns}
+                       columns={tableColumnBuilder()}
                        components={{
                            body: {
                                cell: TableCell,

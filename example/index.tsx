@@ -32,22 +32,22 @@ const tableColumns: FullTableColumns = [
         title: "name",
         dataIndex: "name",
         width: '25%',
-        mutable: false,
-        mutableNode: <Input/>
+        editable: false,
+        formControl: <Input/>
     },
     {
         title: "age",
         dataIndex: "age",
         width: '15%',
-        mutable: true,
-        mutableNode: <Input/>
+        editable: true,
+        formControl: <Input/>
     },
     {
         title: "address",
         dataIndex: "address",
         width: '40%',
-        mutable: true,
-        mutableNode: <Input/>,
+        editable: true,
+        formControl: <Input/>,
         render: (record) => {
             return <span style={{color: "red"}}>{record.address}</span>
         }
@@ -56,8 +56,8 @@ const tableColumns: FullTableColumns = [
         title: "color",
         dataIndex: "color",
         width: "5%",
-        mutable: true,
-        mutableNode: <ColorPicker disabled={false}/>,
+        editable: true,
+        formControl: <ColorPicker disabled={false}/>,
         render: (_, text) => {
             return <ColorPicker disabled={true} value={text} />
         }
@@ -66,8 +66,8 @@ const tableColumns: FullTableColumns = [
         title: "date",
         dataIndex: "date",
         width: "10%",
-        mutable: true,
-        mutableNode: <DatePicker />,
+        editable: true,
+        formControl: <DatePicker />,
         render: (record) => {
             return <span>{record.date.format("YYYY-MM-DD")}</span>
         }
@@ -77,10 +77,16 @@ const tableColumns: FullTableColumns = [
 const App = () => {
     return (
         <div>
-            <FullTable mutable={true} originData={originData} tableColumns={tableColumns}
-                       mutableCallback={(newRecord, oldRecord) => {
+            <FullTable editable={true}
+                       removable={true}
+                       originData={originData}
+                       tableColumns={tableColumns}
+                       editCallback={(newRecord, oldRecord) => {
                            console.log("newRecord", newRecord);
                            console.log("oldRecord", oldRecord);
+                       }}
+                       removeCallback={(record) => {
+                           console.log("remove", record);
                        }}/>
         </div>
     );
