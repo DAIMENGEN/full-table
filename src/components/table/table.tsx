@@ -23,6 +23,7 @@ export const Table: React.FC<TableProps> = (props) => {
                 formControl: column.formControl,
                 editing: column.editable && record.key === editingKey,
             }),
+            sorter: column.sorter ? (prev: TableRowData, curr: TableRowData) => column.sorter && column.sorter(prev, curr) : undefined,
             render: (text: string, record: TableRowData, index: number | undefined) => {
                 if (column.render) {
                     return column.render(record, text, index);

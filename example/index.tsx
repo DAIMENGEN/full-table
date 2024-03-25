@@ -20,7 +20,7 @@ for (let i = 0; i < 100; i++) {
     originData.push({
         key: i.toString(),
         name: `Edward ${i}`,
-        age: 32,
+        age: 32 * i,
         address: `London Park no. ${i}`,
         color: "#000000",
         date: dayjs(),
@@ -33,14 +33,15 @@ const tableColumns: FullTableColumns = [
         dataIndex: "name",
         width: '25%',
         editable: false,
-        formControl: <Input/>
+        formControl: <Input/>,
     },
     {
         title: "age",
         dataIndex: "age",
         width: '15%',
         editable: true,
-        formControl: <Input/>
+        formControl: <Input/>,
+        sorter: (prev, curr) => prev.age - curr.age,
     },
     {
         title: "address",

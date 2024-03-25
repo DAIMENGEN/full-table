@@ -2,7 +2,7 @@
   "name": "full-table",
   "author": "mengen.dai",
   "module": "dist/full-table.esm.js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "keywords": [
     "table",
     "editable",

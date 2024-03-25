@@ -13,6 +13,7 @@ export type TableColumn = {
     width?: string;
     editable?: boolean;
     formControl?: ReactNode;
+    sorter?: (prev: TableRowData, curr: TableRowData) => number;
     render?: (record: TableRowData, text?: string, rowIndex?: number) => ReactNode;
 }
 
