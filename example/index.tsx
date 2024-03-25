@@ -81,6 +81,9 @@ const App = () => {
                        removable={true}
                        originData={originData}
                        tableColumns={tableColumns}
+                       onRowClick={(record) => {
+                        console.log("record", record);
+                       }}
                        editCallback={(newRecord, oldRecord) => {
                            console.log("newRecord", newRecord);
                            console.log("oldRecord", oldRecord);

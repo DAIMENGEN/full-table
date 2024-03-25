@@ -23,6 +23,7 @@ export type TableProps = {
     tableColumns: TableColumns;
     editable?: boolean;
     removable?: boolean;
+    onRowClick?: (record: TableRowData) => void;
     editCallback?: (newRecord: TableRowData, oldRecord?: TableRowData) => void;
     removeCallback?: (record: TableRowData) => void;
 }

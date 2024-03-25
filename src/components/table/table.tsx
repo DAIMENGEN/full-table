@@ -7,7 +7,7 @@ import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined} from "@ant-d
 import {ColumnsType} from "antd/es/table";
 
 export const Table: React.FC<TableProps> = (props) => {
-    const {editable = false, removable = false, originData, tableColumns: columns, removeCallback, editCallback} = props;
+    const {editable = false, removable = false, originData, tableColumns: columns, onRowClick, removeCallback, editCallback} = props;
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState<string>();
     const [dataSource, setDataSource] = useState(originData);
@@ -137,7 +137,11 @@ export const Table: React.FC<TableProps> = (props) => {
                            body: {
                                cell: TableCell,
                            }
-                       }}/>
+                       }}
+                       onRow={(record: TableRowData) => ({
+                           onClick: () => onRowClick && onRowClick(record),
+                       })}
+            />
         </Form>
     )
 }
