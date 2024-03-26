@@ -66,14 +66,14 @@ export const Table: React.FC<TableProps> = (props) => {
                         const editing = record.key === editingKey;
                         return editing ? (
                             <Space size={`middle`}>
-                                <Button title={`save`} disabled={!submittable || record.disableEdit} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Button title={`save`} disabled={!submittable} icon={<CheckOutlined/>} onClick={() => save(record)}/>
                                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                                     <Button title={`cancel`} icon={<CloseOutlined/>}/>
                                 </Popconfirm>
                             </Space>
                         ) : (
                             <Space size={`middle`}>
-                                <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
+                                <Button icon={<EditOutlined/>} disabled={!!editingKey || record.disableEdit} onClick={() => edit(record)}/>
                                 <Popconfirm title={"Sure to remove?"} disabled={record.disableRemove} onConfirm={() => remove(record)}>
                                     <Button title={`remove`} disabled={record.disableRemove} icon={<DeleteOutlined/>}/>
                                 </Popconfirm>
