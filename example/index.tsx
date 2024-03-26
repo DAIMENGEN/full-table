@@ -40,6 +40,7 @@ const tableColumns: FullTableColumns = [
         dataIndex: "age",
         width: '15%',
         editable: true,
+        rules: [{ required: true, message: 'Please input your age!' }],
         formControl: <Input/>,
         sorter: (prev, curr) => prev.age - curr.age,
     },

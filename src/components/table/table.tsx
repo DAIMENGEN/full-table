@@ -9,8 +9,10 @@ import {ColumnsType} from "antd/es/table";
 export const Table: React.FC<TableProps> = (props) => {
     const {editable = false, removable = false, originData, tableColumns: columns, onRowClick, removeCallback, editCallback} = props;
     const [form] = Form.useForm();
+    const values = Form.useWatch([], form);
     const [editingKey, setEditingKey] = useState<string>();
     const [dataSource, setDataSource] = useState(originData);
+    const [submittable, setSubmittable] = useState<boolean>(false);
     const tableColumns = columns.map(column => {
         return {
             title: column.title,
@@ -19,6 +21,7 @@ export const Table: React.FC<TableProps> = (props) => {
             onCell: (record: TableRowData, rowIndex: number | undefined) => ({
                 rowData: record,
                 rowIndex: rowIndex,
+                rules: column.rules,
                 dataIndex: column.dataIndex,
                 formControl: column.formControl,
                 editing: column.editable && record.key === editingKey,
@@ -63,7 +66,7 @@ export const Table: React.FC<TableProps> = (props) => {
                         const editing = record.key === editingKey;
                         return editing ? (
                             <Space size={`middle`}>
-                                <Button title={`save`} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Button title={`save`} disabled={!submittable} icon={<CheckOutlined/>} onClick={() => save(record)}/>
                                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                                     <Button title={`cancel`} icon={<CloseOutlined/>}/>
                                 </Popconfirm>
@@ -89,7 +92,7 @@ export const Table: React.FC<TableProps> = (props) => {
                         const editing = record.key === editingKey;
                         return editing ? (
                             <Space size={`middle`}>
-                                <Button title={`save`} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Button title={`save`} disabled={!submittable} icon={<CheckOutlined/>} onClick={() => save(record)}/>
                                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                                     <Button title={`cancel`} icon={<CloseOutlined/>}/>
                                 </Popconfirm>
@@ -129,6 +132,11 @@ export const Table: React.FC<TableProps> = (props) => {
             form.resetFields();
         }
     }, [props]);
+    useEffect(() => {
+        form.validateFields({ validateOnly: true })
+            .then(() => setSubmittable(true))
+            .catch(() => setSubmittable(false));
+    }, [form, values])
     return (
         <Form form={form}>
             <AntdTable bordered={true}
