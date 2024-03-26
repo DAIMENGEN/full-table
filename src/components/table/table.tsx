@@ -66,7 +66,7 @@ export const Table: React.FC<TableProps> = (props) => {
                         const editing = record.key === editingKey;
                         return editing ? (
                             <Space size={`middle`}>
-                                <Button title={`save`} disabled={!submittable} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Button title={`save`} disabled={!submittable || record.disableEdit} icon={<CheckOutlined/>} onClick={() => save(record)}/>
                                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                                     <Button title={`cancel`} icon={<CloseOutlined/>}/>
                                 </Popconfirm>
@@ -74,8 +74,8 @@ export const Table: React.FC<TableProps> = (props) => {
                         ) : (
                             <Space size={`middle`}>
                                 <Button icon={<EditOutlined/>} disabled={!!editingKey} onClick={() => edit(record)}/>
-                                <Popconfirm title={"Sure to remove?"} onConfirm={() => remove(record)}>
-                                    <Button title={`remove`} icon={<DeleteOutlined/>}/>
+                                <Popconfirm title={"Sure to remove?"} disabled={record.disableRemove} onConfirm={() => remove(record)}>
+                                    <Button title={`remove`} disabled={record.disableRemove} icon={<DeleteOutlined/>}/>
                                 </Popconfirm>
                             </Space>
                         )
@@ -92,7 +92,7 @@ export const Table: React.FC<TableProps> = (props) => {
                         const editing = record.key === editingKey;
                         return editing ? (
                             <Space size={`middle`}>
-                                <Button title={`save`} disabled={!submittable} icon={<CheckOutlined/>} onClick={() => save(record)}/>
+                                <Button title={`save`} disabled={!submittable || record.disableEdit} icon={<CheckOutlined/>} onClick={() => save(record)}/>
                                 <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                                     <Button title={`cancel`} icon={<CloseOutlined/>}/>
                                 </Popconfirm>
@@ -114,8 +114,8 @@ export const Table: React.FC<TableProps> = (props) => {
                     render: (_: string, record: TableRowData) => {
                         return (
                             <Space size={`middle`}>
-                                <Popconfirm title={"Sure to remove?"} onConfirm={() => remove(record)}>
-                                    <Button title={`remove`} icon={<DeleteOutlined/>}/>
+                                <Popconfirm title={"Sure to remove?"} disabled={record.disableRemove} onConfirm={() => remove(record)}>
+                                    <Button title={`remove`} disabled={record.disableRemove} icon={<DeleteOutlined/>}/>
                                 </Popconfirm>
                             </Space>
                         )

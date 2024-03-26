@@ -5,7 +5,7 @@ export type Dictionary = Record<string, any>;
 
 export type TableCellRule = FormRule;
 
-export type TableRowData = Dictionary & { key: string };
+export type TableRowData = Dictionary & { key: string, disableRemove?: boolean, disableEdit?: boolean };
 
 export type TableColumn = {
     title: string;
