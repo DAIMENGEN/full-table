@@ -142,11 +142,11 @@ export const Table: React.FC<TableProps> = (props) => {
             <AntdTable bordered={true}
                        dataSource={dataSource}
                        columns={tableColumnBuilder()}
-                       components={{
+                       components={dataSource.length > 0 ? {
                            body: {
                                cell: TableCell,
                            }
-                       }}
+                       } : undefined}
                        onRow={(record: TableRowData) => ({
                            onClick: () => onRowClick && onRowClick(record),
                        })}
